@@ -32,36 +32,34 @@ header p { color: #94a3b8; font-size: 1em; margin-top: 5px; }
 .player-chip { display: inline-block; background: rgba(14,165,233,0.2); border: 1px solid #0ea5e9; padding: 8px 18px; border-radius: 20px; margin: 5px; font-size: 1em; color: #fff; }
 
 /* =========================================
-   ✅ تحويل العناصر الحالية إلى شكل بطاقة العنصر
+   ✅ بطاقة العنصر الجديدة (الشكل الأخضر)
    ========================================= */
-
-/* الحاوية التي تضم العناصر الثلاثة */
 .element-card {
     background: #060b19;
-    border: 3px solid #10b981; /* الإطار الأخضر */
-    border-radius: 10px;
+    border: 3px solid #10b981;
+    border-radius: 12px;
     width: 150px;
     height: 150px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 10px;
-    margin: 0 auto 20px auto;
+    padding: 12px;
+    margin: 0 auto 15px auto; /* مسافة تحت البطاقة */
     box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
     position: relative;
-    text-align: center;
 }
 
-/* رقم العنصر (يظهر في الزاوية) */
-#atomicNumber, .atomic-num {
+/* الرقم */
+.element-card .atomic-num, #atomicNumber {
+    align-self: flex-start;
     font-size: 1.2em;
     font-weight: bold;
     color: #10b981;
-    align-self: flex-start;
 }
 
-/* رمز العنصر (يظهر في المنتصف) */
-#elementSymbol, .element-symbol {
+/* الرمز */
+.element-card .element-symbol, #elementSymbol {
+    align-self: center;
     font-size: 3.5em;
     font-weight: 900;
     color: #10b981;
@@ -69,22 +67,54 @@ header p { color: #94a3b8; font-size: 1em; margin-top: 5px; }
     text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
-/* اسم العنصر (يظهر في الأسفل) */
-#elementName, .element-name {
-    font-size: 0.9em;
+/* الاسم */
+.element-card .element-name, #elementName {
+    align-self: center;
+    font-size: 0.85em;
     font-weight: bold;
     color: #10b981;
     text-align: center;
     word-break: break-all;
 }
 
-/* ========================================= */
+/* =========================================
+   ✅ خانات الإدخال (تحت البطاقة وأفقية)
+   ========================================= */
+.shells-input-container {
+    display: flex;
+    flex-direction: row; /* لجعلها أفقية */
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 400px;
+}
 
-/* خانات إدخال المستويات */
-.shells-input-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 30px; }
-.shell-input { width: 60px; height: 60px; border-radius: 50%; background: rgba(0,0,0,0.4); border: 2px solid #1e3a8a; color: #fff; font-size: 1.5em; font-weight: bold; text-align: center; outline: none; transition: 0.3s; font-family: inherit; }
-.shell-input:focus { border-color: #0ea5e9; box-shadow: 0 0 15px rgba(14,165,233,0.6); transform: scale(1.1); }
-.shell-input.filled { background: rgba(14,165,233,0.2); border-color: #0ea5e9; }
+.shell-input {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.4);
+    border: 2px solid #1e3a8a;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    outline: none;
+    transition: 0.3s;
+    font-family: inherit;
+}
+
+.shell-input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+    transform: scale(1.1);
+}
+
+.shell-input.filled {
+    background: rgba(16, 185, 129, 0.2);
+}
 
 /* شريط النقاط */
 .stats { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 400px; margin-bottom: 20px; }
