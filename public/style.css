@@ -32,44 +32,50 @@ header p { color: #94a3b8; font-size: 1em; margin-top: 5px; }
 .player-chip { display: inline-block; background: rgba(14,165,233,0.2); border: 1px solid #0ea5e9; padding: 8px 18px; border-radius: 20px; margin: 5px; font-size: 1em; color: #fff; }
 
 /* =========================================
-   ✅ تصميم بطاقة العنصر الجديد (مطابق للصورة)
+   ✅ تحويل العناصر الحالية إلى شكل بطاقة العنصر
    ========================================= */
+
+/* الحاوية التي تضم العناصر الثلاثة */
 .element-card {
     background: #060b19;
-    border: 3px solid #10b981; /* لون الإطار (أخضر نيون) */
-    border-radius: 15px;
-    padding: 15px;
-    width: 140px; /* عرض البطاقة */
-    height: 140px; /* طول البطاقة */
+    border: 3px solid #10b981; /* الإطار الأخضر */
+    border-radius: 10px;
+    width: 150px;
+    height: 150px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    padding: 10px;
     margin: 0 auto 20px auto;
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); /* توهج خارجي */
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
     position: relative;
+    text-align: center;
 }
 
-.element-card .atomic-num {
-    align-self: flex-start;
+/* رقم العنصر (يظهر في الزاوية) */
+#atomicNumber, .atomic-num {
     font-size: 1.2em;
     font-weight: bold;
-    color: #10b981; /* لون الرقم */
+    color: #10b981;
+    align-self: flex-start;
 }
 
-.element-card .element-symbol {
+/* رمز العنصر (يظهر في المنتصف) */
+#elementSymbol, .element-symbol {
     font-size: 3.5em;
     font-weight: 900;
-    color: #10b981; /* لون الرمز */
+    color: #10b981;
     line-height: 1;
     text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
-.element-card .element-name {
+/* اسم العنصر (يظهر في الأسفل) */
+#elementName, .element-name {
     font-size: 0.9em;
     font-weight: bold;
     color: #10b981;
     text-align: center;
+    word-break: break-all;
 }
 
 /* ========================================= */
