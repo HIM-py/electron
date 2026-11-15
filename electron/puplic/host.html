@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المشرف</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <header><h1>لوحة المشرف</h1></header>
+    
+    <div id="setup" class="panel">
+        <button id="createBtn" class="btn">+ إنشاء غرفة</button>
+    </div>
+    
+    <div id="lobby" class="panel hidden">
+        <div class="room-code-box">
+            <p>كود الغرفة:</p>
+            <div id="roomCode" class="code">----</div>
+        </div>
+        <div id="playersList"><h4>اللاعبون (0):</h4></div>
+        <button id="startBtn" class="btn next-btn hidden">▶️ ابدأ اللعبة</button>
+    </div>
+
+    <div id="gameArea" class="panel hidden">
+        <div id="elementDisplay" style="text-align: center; margin-bottom: 20px;"></div>
+        <div id="statusMsg" class="status"></div>
+        <div id="revealBox" class="reveal hidden"></div>
+        <button id="nextBtn" class="btn next-btn hidden">الجولة التالية</button>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    
+    document.getElementById('createBtn').onclick = () => {
+        socket.emit('createRoom', { mode: 'team' }, ({ code }) => {
+            document.getElementById('roomCode').textContent = code;
+            document.getElementById('setup').classList.add('hidden');
+            document.getElementById('lobby').classList.remove('hidden');
+        });
+    };
+
+    socket.on('roomUpdate', (room) => {
+        document.getElementById('playersList').innerHTML = `<h4>اللاعبون (${room.players.length}):</h4>` + 
+            room.players.map(p => `<span class="player-chip">${p.name}</span>`).join('');
+        if (room.players.length > 0) {
+            document.getElementById('startBtn').classList.remove('hidden');
+        }
+    });
+
+    document.getElementById('startBtn').onclick = () => socket.emit('startRound');
+
+    socket.on('roundStartedHost', ({ round, data }) => {
+        document.getElementById('lobby').classList.add('hidden');
+        document.getElementById('gameArea').classList.remove('hidden');
+        document.getElementById('revealBox').classList.add('hidden');
+        document.getElementById('nextBtn').classList.add('hidden');
+        
+        document.getElementById('elementDisplay').innerHTML = `
+            <div class="element-card" style="margin: 0 auto;">
+                <div class="top-info"><span>${data.z}</span><span>${data.sym}</span></div>
+                <div class="element-name">${data.name} (${data.nameAr})</div>
+            </div>
+        `;
+        document.getElementById('statusMsg').textContent = `الجولة ${round} — في انتظار إجابات اللاعبين...`;
+    });
+
+    socket.on('revealHost', ({ leaderboard, correctConfig }) => {
+        document.getElementById('statusMsg').textContent = '';
+        const box = document.getElementById('revealBox');
+        box.classList.remove('hidden');
+        box.innerHTML = `
+            <h3 style="color: #10b981;">الإجابة الصحيحة: ${correctConfig.join(' - ')}</h3>
+            <div class="leaderboard" style="margin-top: 20px;">
+                ${leaderboard.map((p, i) => `<div class="lb-row"><span class="rank">${i+1}</span><span class="name">${p.name}</span><span class="pts">${p.score}</span></div>`).join('')}
+            </div>
+        `;
+        document.getElementById('nextBtn').classList.remove('hidden');
+    });
+
+    document.getElementById('nextBtn').onclick = () => {
+        socket.emit('nextRound');
+        document.getElementById('nextBtn').classList.add('hidden');
+    };
+</script>
+</body>
+</html>
