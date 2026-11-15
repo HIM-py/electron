@@ -31,12 +31,48 @@ header p { color: #94a3b8; font-size: 1em; margin-top: 5px; }
 .code { font-size: 3em; font-weight: 900; color: #fff; letter-spacing: 15px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 15px; border: 2px solid #0ea5e9; box-shadow: 0 0 15px rgba(14,165,233,0.5); margin: 10px 0; text-shadow: 0 0 20px #0ea5e9; }
 .player-chip { display: inline-block; background: rgba(14,165,233,0.2); border: 1px solid #0ea5e9; padding: 8px 18px; border-radius: 20px; margin: 5px; font-size: 1em; color: #fff; }
 
-/* بطاقة العنصر */
-.element-card { background: linear-gradient(180deg, rgba(13,27,56,0.95), rgba(6,11,25,0.95)); border: 3px solid #1e3a8a; border-radius: 20px; padding: 30px; width: 100%; max-width: 400px; margin: 0 auto 20px auto; box-shadow: 0 0 30px rgba(14,165,233,0.2); text-align: center; }
-.top-info { display: flex; justify-content: space-between; font-size: 1.8em; font-weight: bold; color: #94a3b8; margin-bottom: 10px; }
-.top-info span:first-child { color: #0ea5e9; }
-.top-info span:last-child { color: #fbbf24; }
-.element-name { font-size: 2em; font-weight: bold; color: #fff; margin-bottom: 30px; }
+/* =========================================
+   ✅ تصميم بطاقة العنصر الجديد (مطابق للصورة)
+   ========================================= */
+.element-card {
+    background: #060b19;
+    border: 3px solid #10b981; /* لون الإطار (أخضر نيون) */
+    border-radius: 15px;
+    padding: 15px;
+    width: 140px; /* عرض البطاقة */
+    height: 140px; /* طول البطاقة */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); /* توهج خارجي */
+    position: relative;
+}
+
+.element-card .atomic-num {
+    align-self: flex-start;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #10b981; /* لون الرقم */
+}
+
+.element-card .element-symbol {
+    font-size: 3.5em;
+    font-weight: 900;
+    color: #10b981; /* لون الرمز */
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.element-card .element-name {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #10b981;
+    text-align: center;
+}
+
+/* ========================================= */
 
 /* خانات إدخال المستويات */
 .shells-input-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 30px; }
