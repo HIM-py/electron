@@ -15,12 +15,17 @@
         <button id="randomBtn" class="btn-new">🎲 عنصر جديد</button>
     </div>
 
-    <div class="element-card" id="elementCard">
-        <div class="top-info"><span id="atomicNumber">?</span><span id="elementSymbol">?</span></div>
+    <!-- بطاقة العنصر -->
+    <div class="element-card">
+        <div class="atomic-num" id="atomicNumber">?</div>
+        <div class="element-symbol" id="elementSymbol">?</div>
         <div class="element-name" id="elementName">جاري التحميل...</div>
-        <div class="shells-input-container" id="shellsContainer"></div>
-        <button id="checkBtn" class="btn-check">✅ تحقق من الإجابة</button>
     </div>
+
+    <!-- خانات الإدخال (خارج البطاقة) -->
+    <div class="shells-input-container" id="shellsContainer"></div>
+    
+    <button id="checkBtn" class="btn-check">✅ تحقق من الإجابة</button>
 
     <div id="messageBox" class="message-box hidden"></div>
 </div>
@@ -154,9 +159,12 @@
     function getRandomElement() {
         const randomIndex = Math.floor(Math.random() * allElements.length);
         currentElement = allElements[randomIndex];
+        
+        // تحديث محتوى البطاقة
         document.getElementById('atomicNumber').textContent = currentElement.z;
         document.getElementById('elementSymbol').textContent = currentElement.sym;
-        document.getElementById('elementName').textContent = currentElement.name + " (" + currentElement.nameAr + ")";
+        document.getElementById('elementName').textContent = `${currentElement.name} (${currentElement.nameAr})`;
+        
         document.getElementById('messageBox').classList.add('hidden');
         renderShellsInputs();
     }
