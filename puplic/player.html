@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>انضم للعبة</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <header><h1>انضم للعبة</h1></header>
+
+    <div id="joinBox" class="panel" style="max-width: 400px; text-align: center;">
+        <input id="codeInput" class="input" maxlength="4" placeholder="كود الغرفة" style="text-align: center;">
+        <input id="nameInput" class="input" placeholder="اسمك">
+        <button id="joinBtn" class="btn">دخول</button>
+        <p id="errMsg" class="err"></p>
+    </div>
+
+    <div id="waitBox" class="panel hidden" style="text-align: center;">
+        <h2>⏳ في الانتظار...</h2>
+        <p>أهلاً <strong id="myName"></strong></p>
+    </div>
+
+    <div id="playBox" class="panel hidden" style="max-width: 400px;">
+        <div id="elementDisplay"></div>
+        <div id="inputArea" class="hidden">
+            <div id="shellsContainer" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;"></div>
+            <button id="submitBtn" class="btn">إرسال الإجابة</button>
+        </div>
+        <div id="statusMsg" class="status"></div>
+        <div id="resultBox" class="hidden"></div>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    
+    document.getElementById('joinBtn').onclick = () => {
+        const code = document.getElementById('codeInput').value.trim().toUpperCase();
+        const name = document.getElementById('nameInput').value.trim();
+        if (!code || !name) { document.getElementById('errMsg').textContent = 'أدخل الكود والاسم'; return; }
+        
+        socket.emit('joinRoom', { code, name }, (res) => {
+            if (res.error) { document.getElementById('errMsg').textContent = res.error; return; }
+            document.getElementById('joinBox').classList.add('hidden');
+            document.getElementById('waitBox').classList.remove('hidden');
+            document.getElementById('myName').textContent = name;
+        });
+    };
+
+    socket.on('roundStarted', ({ round, data }) => {
+        document.getElementById('waitBox').classList.add('hidden');
+        document.getElementById('playBox').classList.remove('hidden');
+        document.getElementById('resultBox').classList.add('hidden');
+        document.getElementById('inputArea').classList.remove('hidden');
+        document.getElementById('statusMsg').textContent = `الجولة ${round}: أدخل التوزيع الإلكتروني`;
+        
+        document.getElementById('elementDisplay').innerHTML = `
+            <div class="element-card" style="margin-bottom: 20px;">
+                <div class="top-info"><span>${data.z}</span><span>${data.sym}</span></div>
+                <div class="element-name">${data.name} (${data.nameAr})</div>
+            </div>
+        `;
+        renderShellsInputs(data.config.length);
+    });
+
+    function renderShellsInputs(count) {
+        const container = document.getElementById('shellsContainer');
+        container.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'shell-input';
+            input.maxLength = 2;
+            input.dataset.index = i;
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const next = document.querySelector(`.shell-input[data-index="${i + 1}"]`);
+                    if (next) next.focus();
+                    else submitAnswer();
+                }
+            });
+            container.appendChild(input);
+        }
+        const first = document.querySelector('.shell-input');
+        if (first) first.focus();
+    }
+
+    document.getElementById('submitBtn').onclick = submitAnswer;
+
+    function submitAnswer() {
+        const inputs = document.querySelectorAll('.shell-input');
+        const config = Array.from(inputs).map(inp => parseInt(inp.value.trim()) || 0);
+        socket.emit('submitAnswer', { config });
+        document.getElementById('inputArea').classList.add('hidden');
+        document.getElementById('statusMsg').textContent = 'تم إرسال الإجابة، في انتظار الباقين...';
+    }
+
+    socket.on('answerResult', ({ isCorrect, pts, correctConfig }) => {
+        const box = document.getElementById('resultBox');
+        box.classList.remove('hidden');
+        box.innerHTML = isCorrect 
+            ? `<div style="color: #10b981; font-weight: bold;">✅ إجابة صحيحة! +${pts} نقاط</div>`
+            : `<div style="color: #ef4444; font-weight: bold;">❌ إجابة خاطئة. الإجابة الصحيحة: ${correctConfig.join(' - ')}</div>`;
+    });
+
+    socket.on('revealPlayer', ({ leaderboard, correctConfig, mine }) => {
+        const box = document.getElementById('resultBox');
+        box.innerHTML = `
+            <h3 style="color: #10b981;">الإجابة الصحيحة: ${correctConfig.join(' - ')}</h3>
+            <p style="margin-top: 10px;">نتيجتك: ${mine.pts} نقاط</p>
+            <div class="leaderboard" style="margin-top: 20px;">
+                ${leaderboard.map((p, i) => `<div class="lb-row"><span class="rank">${i+1}</span><span class="name">${p.name}</span><span class="pts">${p.score}</span></div>`).join('')}
+            </div>
+        `;
+    });
+</script>
+</body>
+</html>
